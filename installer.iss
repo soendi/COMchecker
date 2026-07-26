@@ -2,7 +2,7 @@
 ; Based on KOFplanner installer pattern
 
 #define MyAppName "COMchecker"
-#define MyAppVersion "1.0.0.0"
+#define MyAppVersion "1.0.0.1"
 #define MyAppPublisher "Lukas Sonderegger"
 #define MyAppURL "https://github.com/soendi/COMchecker"
 #define MyAppExeName "COMchecker.exe"

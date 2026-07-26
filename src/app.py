@@ -193,6 +193,17 @@ class COMcheckerApp:
         config_frame = tk.Frame(main_container, bg=self.COLORS["bg"])
         config_frame.pack(fill=tk.X, pady=(0, 5))
 
+        tk.Label(config_frame, text="Preset:", bg=self.COLORS["bg"], fg=self.COLORS["fg"],
+                 font=("Segoe UI", 9, "bold")).pack(side=tk.LEFT, padx=(0, 5))
+        self.preset_var = tk.StringVar(value="")
+        preset_menu = ttk.Combobox(config_frame, textvariable=self.preset_var,
+                                   values=["", "Addimat", "Restliche"],
+                                   width=10, state="readonly")
+        preset_menu.pack(side=tk.LEFT, padx=(0, 15))
+        preset_menu.bind("<<ComboboxSelected>>", self._apply_preset)
+
+        ttk.Separator(config_frame, orient=tk.VERTICAL).pack(side=tk.LEFT, fill=tk.Y, padx=(0, 10))
+
         ports = ["9600", "19200", "38400", "57600", "115200"]
         tk.Label(config_frame, text="Baudrate:", bg=self.COLORS["bg"], fg=self.COLORS["fg"],
                  font=("Segoe UI", 9)).pack(side=tk.LEFT, padx=(0, 5))
@@ -263,6 +274,8 @@ class COMcheckerApp:
             command=self._start_monitoring,
         )
         self.start_btn.pack(side=tk.LEFT, padx=(0, 8))
+
+        self.preset_timeout_ms = 100
 
         self.stop_btn = tk.Button(
             btn_frame, text="Monitoring Stoppen",
@@ -422,8 +435,23 @@ class COMcheckerApp:
             "bytesize": int(self.databits_var.get()),
             "parity": parity_map.get(self.parity_var.get(), serial.PARITY_NONE),
             "stopbits": stopbits_map.get(self.stopbits_var.get(), serial.STOPBITS_ONE),
-            "timeout": 0.1,
+            "timeout": self.preset_timeout_ms / 1000.0,
         }
+
+    def _apply_preset(self, event=None):
+        preset = self.preset_var.get()
+        presets = {
+            "Addimat": {"baudrate": "9600", "databits": "8", "stopbits": "1", "parity": "None", "timeout_ms": 50},
+            "Restliche": {"baudrate": "9600", "databits": "8", "stopbits": "1", "parity": "None", "timeout_ms": 10},
+        }
+        p = presets.get(preset)
+        if p:
+            self.baudrate_var.set(p["baudrate"])
+            self.databits_var.set(p["databits"])
+            self.stopbits_var.set(p["stopbits"])
+            self.parity_var.set(p["parity"])
+            self.preset_timeout_ms = p["timeout_ms"]
+            self._log_info(f"Preset '{preset}' geladen (Timeout={p['timeout_ms']}ms)")
 
     def _start_monitoring(self):
         if self.monitoring:
@@ -443,7 +471,7 @@ class COMcheckerApp:
                                  activebackground="#d32f2f")
             self.scan_btn.config(state=tk.DISABLED)
             self.status_bar.set_text(f"berwache {len(ports)} Ports...")
-            self._log_info(f"Monitoring gestartet auf {len(ports)} Port(s) mit {self.baudrate_var.get()} Baud")
+            self._log_info(f"Monitoring gestartet auf {len(ports)} Port(s) mit {self.baudrate_var.get()} Baud, Timeout={self.preset_timeout_ms}ms")
         else:
             messagebox.showerror("Fehler", "Monitoring konnte nicht gestartet werden.")
 
