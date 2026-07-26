@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+*.spec
+
+# Virtual environment
+venv/
+.env/
+
+# Installer output
+*.exe
+!src/main.py
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Windows
+Thumbs.db
+
+# PyInstaller
+*.exe
