@@ -1,9 +1,11 @@
 import winreg
 import os
+import sys
+import subprocess
 from src.version import APP_NAME, APP_AUTHOR
 
-
 REG_PATH = f"Software\\{APP_AUTHOR}\\{APP_NAME}"
+TASK_NAME = "COMchecker"
 
 
 class Settings:
@@ -68,38 +70,44 @@ class Settings:
         except FileNotFoundError:
             pass
 
-    def get_autostart(self):
+    # ---- Autostart via Task Scheduler (Admin-kompatibel) ----
+
+    def _task_exists(self):
         try:
-            key = winreg.OpenKey(
-                winreg.HKEY_CURRENT_USER,
-                r"Software\Microsoft\Windows\CurrentVersion\Run",
-                0, winreg.KEY_READ
+            result = subprocess.run(
+                ["schtasks", "/QUERY", "/TN", TASK_NAME],
+                capture_output=True, text=True,
+                creationflags=subprocess.CREATE_NO_WINDOW
             )
-            try:
-                value, _ = winreg.QueryValueEx(key, APP_NAME)
-                return value
-            except FileNotFoundError:
-                return None
-            finally:
-                winreg.CloseKey(key)
-        except FileNotFoundError:
-            return None
+            return result.returncode == 0
+        except Exception:
+            return False
+
+    def _create_task(self, exe_path):
+        cmd = [
+            "schtasks", "/CREATE", "/SC", "ONLOGON",
+            "/TN", TASK_NAME,
+            "/TR", exe_path,
+            "/RL", "HIGHEST",
+            "/F"
+        ]
+        subprocess.run(cmd, capture_output=True, text=True,
+                       creationflags=subprocess.CREATE_NO_WINDOW, check=True)
+
+    def _delete_task(self):
+        subprocess.run(
+            ["schtasks", "/DELETE", "/TN", TASK_NAME, "/F"],
+            capture_output=True, text=True,
+            creationflags=subprocess.CREATE_NO_WINDOW
+        )
+
+    def get_autostart(self):
+        return TASK_NAME if self._task_exists() else None
 
     def set_autostart(self, enable, exe_path=None):
-        key = winreg.OpenKey(
-            winreg.HKEY_CURRENT_USER,
-            r"Software\Microsoft\Windows\CurrentVersion\Run",
-            0, winreg.KEY_SET_VALUE
-        )
-        try:
-            if enable:
-                if exe_path is None:
-                    exe_path = os.path.abspath(sys.argv[0])
-                winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, f'"{exe_path}"')
-            else:
-                try:
-                    winreg.DeleteValue(key, APP_NAME)
-                except FileNotFoundError:
-                    pass
-        finally:
-            winreg.CloseKey(key)
+        if enable:
+            if exe_path is None:
+                exe_path = os.path.abspath(sys.argv[0])
+            self._create_task(exe_path)
+        else:
+            self._delete_task()

@@ -6,6 +6,7 @@ import os
 import sys
 import subprocess
 import ctypes
+import win32print
 from datetime import datetime
 
 from src.scanner import PortMonitor, get_available_ports
@@ -123,8 +124,8 @@ class SettingsDialog:
                               fg_color=ACCENT, hover_color="#106ebe")
         cb.pack(anchor="w", padx=10, pady=10)
 
-        ctk.CTkLabel(parent, text="Die App wird \u00fcber die Windows-Registrierung gestartet.\n"
-                       "Keine Administratorrechte erforderlich.",
+        ctk.CTkLabel(parent, text="Die App wird über die Windows-Taskplanung (mit Admin-Rechten) gestartet.\n"
+                       "Kein UAC-Dialog beim Systemstart.",
                        text_color="#888888", anchor="w", justify="left").pack(anchor="w", padx=10, pady=(0, 10))
 
     def _setup_database_tab(self, parent):
@@ -146,9 +147,8 @@ class SettingsDialog:
 
     def _get_available_printers(self):
         try:
-            import win32print
-            printers = win32print.EnumPrinters(2)
-            return [p[2] for p in printers]
+            printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
+            return [p[2] for p in printers] if printers else ["Standarddrucker (System)"]
         except Exception:
             return ["Standarddrucker (System)"]
 
