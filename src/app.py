@@ -426,7 +426,7 @@ class COMcheckerApp:
         config_frame = ctk.CTkFrame(main_container, fg_color="transparent")
         config_frame.pack(fill="x", pady=(5, 5))
 
-        ctk.CTkLabel(config_frame, text="Preset:").pack(side="left", padx=(0, 5))
+        ctk.CTkLabel(config_frame, text="Preset:").pack(side="left", padx=(10, 5))
         self.preset_var = ctk.StringVar(value="")
         ctk.CTkOptionMenu(config_frame, variable=self.preset_var,
                            values=["", "Addimat", "iButton", "JK2000",
@@ -436,7 +436,7 @@ class COMcheckerApp:
                            command=self._apply_preset).pack(side="left", padx=(0, 15))
 
         right_frame = ctk.CTkFrame(config_frame, fg_color="transparent")
-        right_frame.pack(side="right")
+        right_frame.pack(side="right", padx=(0, 10))
 
         ctk.CTkLabel(right_frame, text="Baudrate:").pack(side="left", padx=(0, 5))
         self.baudrate_var = ctk.StringVar(value="9600")
