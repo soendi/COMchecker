@@ -435,27 +435,30 @@ class COMcheckerApp:
                            fg_color="#333333", button_color=ACCENT, width=150,
                            command=self._apply_preset).pack(side="left", padx=(0, 15))
 
-        ctk.CTkLabel(config_frame, text="Baudrate:").pack(side="left", padx=(0, 5))
+        right_frame = ctk.CTkFrame(config_frame, fg_color="transparent")
+        right_frame.pack(side="right")
+
+        ctk.CTkLabel(right_frame, text="Baudrate:").pack(side="left", padx=(0, 5))
         self.baudrate_var = ctk.StringVar(value="9600")
-        ctk.CTkOptionMenu(config_frame, variable=self.baudrate_var,
+        ctk.CTkOptionMenu(right_frame, variable=self.baudrate_var,
                            values=["9600", "19200", "38400", "57600", "115200"],
                            fg_color="#333333", button_color=ACCENT, width=85).pack(side="left", padx=(0, 15))
 
-        ctk.CTkLabel(config_frame, text="Datenbits:").pack(side="left", padx=(0, 5))
+        ctk.CTkLabel(right_frame, text="Datenbits:").pack(side="left", padx=(0, 5))
         self.databits_var = ctk.StringVar(value="8")
-        ctk.CTkOptionMenu(config_frame, variable=self.databits_var,
+        ctk.CTkOptionMenu(right_frame, variable=self.databits_var,
                            values=["5", "6", "7", "8"],
                            fg_color="#333333", button_color=ACCENT, width=60).pack(side="left", padx=(0, 15))
 
-        ctk.CTkLabel(config_frame, text="Parit\u00e4t:").pack(side="left", padx=(0, 5))
+        ctk.CTkLabel(right_frame, text="Parit\u00e4t:").pack(side="left", padx=(0, 5))
         self.parity_var = ctk.StringVar(value="None")
-        ctk.CTkOptionMenu(config_frame, variable=self.parity_var,
+        ctk.CTkOptionMenu(right_frame, variable=self.parity_var,
                            values=["None", "Even", "Odd"],
                            fg_color="#333333", button_color=ACCENT, width=70).pack(side="left", padx=(0, 15))
 
-        ctk.CTkLabel(config_frame, text="Stoppbits:").pack(side="left", padx=(0, 5))
+        ctk.CTkLabel(right_frame, text="Stoppbits:").pack(side="left", padx=(0, 5))
         self.stopbits_var = ctk.StringVar(value="1")
-        ctk.CTkOptionMenu(config_frame, variable=self.stopbits_var,
+        ctk.CTkOptionMenu(right_frame, variable=self.stopbits_var,
                            values=["1", "1.5", "2"],
                            fg_color="#333333", button_color=ACCENT, width=60).pack(side="left")
 
