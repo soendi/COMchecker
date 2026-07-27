@@ -130,6 +130,7 @@ def run_update(version, progress_callback=None, done_callback=None):
                 f'while ((Get-Process -Name "{APP_NAME}" -ErrorAction SilentlyContinue) -and $elapsed -lt $killTimeout) {{ '
                 f'Start-Sleep -Seconds 1; $elapsed++ }}; '
                 f'Start-Sleep -Seconds 3; '
+                f'Get-ChildItem "$env:TEMP\\_MEI*" -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue; '
                 f'Start-Process "{installer_path}" -ArgumentList "/SILENT" -Wait; '
                 f'Start-Sleep -Seconds 3; '
                 f'Start-Process "{exe_path}"'

@@ -35,10 +35,10 @@ SetupLogging=yes
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "Desktopsymbol erstellen"; GroupDescription: "Zusätzliche Symbole:"; Flags: unchecked
+Name: "desktopicon"; Description: "Desktopsymbol erstellen"; GroupDescription: "Zusï¿½tzliche Symbole:"; Flags: unchecked
 
 [Files]
-Source: "dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\COMchecker\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 Source: "resources\icon.ico"; DestDir: "{app}\resources"; Flags: ignoreversion
 
 [Icons]
@@ -71,7 +71,7 @@ begin
     + Chr(13) + Chr(13)
     + 'Ja  - Daten bleiben erhalten (Registry, Datenbank, Logs)'
     + Chr(13)
-    + 'Nein - Alles wird gelöscht inklusive Datenbank und Logdateien',
+    + 'Nein - Alles wird gelï¿½scht inklusive Datenbank und Logdateien',
     mbConfirmation, MB_YESNO) = IDYES;
 end;
 
