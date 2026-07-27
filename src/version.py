@@ -1,4 +1,4 @@
-VERSION = "1.0.0.1"
+VERSION = "1.0.0.2"
 APP_NAME = "COMchecker"
 APP_AUTHOR = "Lukas Sonderegger"
 APP_DESCRIPTION = "COM-Port Monitor für Addimat Kellnerschloss"
