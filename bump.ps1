@@ -83,6 +83,7 @@ Set-Value -Path "$ProjectRoot\installer.iss" `
 
 Write-Host "Updated all version references."
 
+$ErrorActionPreference = "Continue"  # native commands (pyinstaller) write info to stderr
 Set-Location -Path $ProjectRoot
 $commitMsg = if ($Message) { $Message } else { "Release v$Version" }
 
@@ -107,7 +108,7 @@ if (-not $NoRelease) {
         --distpath "$ProjectRoot\dist" `
         --workpath "$ProjectRoot\build" `
         --specpath "$ProjectRoot" `
-        "$ProjectRoot\src\main.py" 2>&1
+        "$ProjectRoot\src\main.py" *>&1
     if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: PyInstaller failed."; exit 1 }
 
     if (-not $iscc) {
@@ -115,7 +116,7 @@ if (-not $NoRelease) {
         exit 1
     }
     Write-Host "Building COMchecker-Setup.exe with Inno Setup..."
-    & $iscc "$ProjectRoot\installer.iss" 2>&1
+    & $iscc "$ProjectRoot\installer.iss" *>&1
     if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: ISCC failed."; exit 1 }
 }
 
