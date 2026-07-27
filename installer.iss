@@ -2,7 +2,7 @@
 ; Requires Inno Setup 6+ for Unicode support
 
 #define MyAppName "COMchecker"
-#define MyAppVersion "1.0.0.5"
+#define MyAppVersion "1.0.0.6"
 #define MyAppPublisher "Lukas Sonderegger"
 #define MyAppURL "https://github.com/soendi/COMchecker"
 #define MyAppExeName "COMchecker.exe"
