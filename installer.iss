@@ -1,4 +1,4 @@
-; Inno Setup Installer Script for COMchecker
+﻿; Inno Setup Installer Script for COMchecker
 ; Requires Inno Setup 6+ for Unicode support
 
 #define MyAppName "COMchecker"
@@ -68,9 +68,10 @@ begin
   Result := True;
   KeepSettings := MsgBox(
     'Sollen Ihre Einstellungen, Datenbank und Logdateien erhalten bleiben?'
-    #13#13
-    'Ja  - Daten bleiben erhalten (Registry, Datenbank, Logs)' #13
-    'Nein - Alles wird gelöscht inklusive Datenbank und Logdateien',
+    + Chr(13) + Chr(13)
+    + 'Ja  - Daten bleiben erhalten (Registry, Datenbank, Logs)'
+    + Chr(13)
+    + 'Nein - Alles wird gelöscht inklusive Datenbank und Logdateien',
     mbConfirmation, MB_YESNO) = IDYES;
 end;
 
