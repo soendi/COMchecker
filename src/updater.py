@@ -124,10 +124,14 @@ def run_update(version, progress_callback=None, done_callback=None):
             exe_path = os.path.abspath(sys.argv[0])
 
             ps_cmd = (
-                f'Start-Sleep -Seconds 2; '
-                f'Stop-Process -Name "{APP_NAME}" -Force -ErrorAction SilentlyContinue; '
+                f'$killTimeout = 15; $elapsed = 0; '
+                f'Get-Process -Name "{APP_NAME}" -ErrorAction SilentlyContinue | Stop-Process -Force; '
                 f'Start-Sleep -Seconds 1; '
+                f'while ((Get-Process -Name "{APP_NAME}" -ErrorAction SilentlyContinue) -and $elapsed -lt $killTimeout) {{ '
+                f'Start-Sleep -Seconds 1; $elapsed++ }}; '
+                f'Start-Sleep -Seconds 2; '
                 f'Start-Process "{installer_path}" -ArgumentList "/SILENT" -Wait; '
+                f'Start-Sleep -Seconds 2; '
                 f'Start-Process "{exe_path}"'
             )
 
@@ -138,7 +142,7 @@ def run_update(version, progress_callback=None, done_callback=None):
                 creationflags=0x08000000,
             )
 
-            sys.exit(0)
+            os._exit(0)
 
         except Exception as e:
             if done_callback:
