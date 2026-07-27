@@ -743,10 +743,17 @@ class COMcheckerApp:
         run_update(version, on_progress, on_done)
 
     def _uninstall_app(self):
-        subprocess.Popen(["cmd", "/c", "start", "ms-settings:appsfeatures-app"],
-                         creationflags=subprocess.CREATE_NO_WINDOW)
-        self.logger.info("Deinstallation: Apps & Features geöffnet")
-        self.root.destroy()
+        exe_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        uninstall_path = os.path.join(exe_dir, "unins000.exe")
+        if os.path.exists(uninstall_path):
+            self.logger.info("Deinstallation gestartet")
+            subprocess.Popen([uninstall_path])
+            self.root.destroy()
+        else:
+            messagebox.showerror("Fehler",
+                "Uninstaller nicht gefunden.\n"
+                "Bitte deinstallieren Sie COMchecker manuell über:\n"
+                "Systemsteuerung > Apps & Features")
 
     def _show_about(self):
         messagebox.showinfo(
