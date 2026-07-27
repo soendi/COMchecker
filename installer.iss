@@ -69,8 +69,8 @@ begin
   KeepSettings := MsgBox(
     'Sollen Ihre Einstellungen, Datenbank und Logdateien erhalten bleiben?'
     #13#13
-    'Ja  – Daten bleiben erhalten (Registry, Datenbank, Logs)' #13
-    'Nein – Alles wird gelöscht inklusive Datenbank und Logdateien',
+    'Ja  - Daten bleiben erhalten (Registry, Datenbank, Logs)' #13
+    'Nein - Alles wird gelöscht inklusive Datenbank und Logdateien',
     mbConfirmation, MB_YESNO) = IDYES;
 end;
 
