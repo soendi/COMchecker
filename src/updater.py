@@ -121,9 +121,19 @@ def run_update(version, progress_callback=None, done_callback=None):
             if done_callback:
                 done_callback(True, None)
 
+            exe_path = os.path.abspath(sys.argv[0])
+
+            ps_cmd = (
+                f'Start-Sleep -Seconds 3; '
+                f'Start-Process "{installer_path}" -ArgumentList "/SILENT" -Wait -Verb RunAs; '
+                f'Start-Process "{exe_path}"'
+            )
+
             subprocess.Popen(
-                [installer_path, "/SILENT", "/CURRENTUSER"],
+                ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
+                 "-Command", ps_cmd],
                 shell=False,
+                creationflags=0x08000000,
             )
 
             sys.exit(0)
