@@ -743,45 +743,10 @@ class COMcheckerApp:
         run_update(version, on_progress, on_done)
 
     def _uninstall_app(self):
-        confirm = messagebox.askyesno("Deinstallieren",
-            "COMchecker wird deinstalliert.\n\n"
-            "Fortfahren?")
-        if confirm:
-            self._perform_uninstall()
-
-    def _perform_uninstall(self):
-        try:
-            uninstall_path = self._find_uninstaller()
-            if uninstall_path and os.path.exists(uninstall_path):
-                subprocess.Popen([uninstall_path])
-                self.root.destroy()
-            else:
-                messagebox.showwarning("Deinstallation",
-                    "Der Uninstaller wurde nicht gefunden.\n"
-                    "Bitte deinstallieren Sie COMchecker manuell über:\n"
-                    "Systemsteuerung > Programme und Funktionen")
-        except Exception as e:
-            messagebox.showerror("Fehler", f"Deinstallation fehlgeschlagen:\n{e}")
-
-    def _find_uninstaller(self):
-        try:
-            import winreg
-            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                                  r"Software\Microsoft\Windows\CurrentVersion\Uninstall"
-                                  r"\COMchecker_is1")
-            path, _ = winreg.QueryValueEx(key, "UninstallString")
-            winreg.CloseKey(key)
-            return path.strip('"')
-        except Exception:
-            try:
-                key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                      r"Software\Microsoft\Windows\CurrentVersion\Uninstall"
-                                      r"\COMchecker_is1")
-                path, _ = winreg.QueryValueEx(key, "UninstallString")
-                winreg.CloseKey(key)
-                return path.strip('"')
-            except Exception:
-                return None
+        subprocess.Popen(["cmd", "/c", "start", "ms-settings:appsfeatures-app"],
+                         creationflags=subprocess.CREATE_NO_WINDOW)
+        self.logger.info("Deinstallation: Apps & Features geöffnet")
+        self.root.destroy()
 
     def _show_about(self):
         messagebox.showinfo(
