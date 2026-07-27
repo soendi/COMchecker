@@ -761,8 +761,7 @@ class COMcheckerApp:
             f"{APP_NAME} v{VERSION}\n\n"
             f"{APP_DESCRIPTION}\n\n"
             f"Entwickelt von {APP_AUTHOR}\n\n"
-            f"\u00dcberwacht alle COM-Ports gleichzeitig\n"
-            f"und empf\u00e4ngt Daten von Addimat-Kellnerschl\u00f6ssern."
+            f"COM-Port-\u00dcberwachung f\u00fcr beliebige serielle Ger\u00e4te."
         )
 
     def _quit(self):
