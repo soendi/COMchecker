@@ -125,7 +125,7 @@ def run_update(version, progress_callback=None, done_callback=None):
 
             ps_cmd = (
                 f'Start-Sleep -Seconds 3; '
-                f'Start-Process "{installer_path}" -ArgumentList "/SILENT" -Wait -Verb RunAs; '
+                f'Start-Process "{installer_path}" -ArgumentList "/SILENT" -Wait; '
                 f'Start-Process "{exe_path}"'
             )
 
