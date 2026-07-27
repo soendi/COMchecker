@@ -126,12 +126,12 @@ def run_update(version, progress_callback=None, done_callback=None):
             ps_cmd = (
                 f'$killTimeout = 15; $elapsed = 0; '
                 f'Get-Process -Name "{APP_NAME}" -ErrorAction SilentlyContinue | Stop-Process -Force; '
-                f'Start-Sleep -Seconds 1; '
+                f'Start-Sleep -Seconds 3; '
                 f'while ((Get-Process -Name "{APP_NAME}" -ErrorAction SilentlyContinue) -and $elapsed -lt $killTimeout) {{ '
                 f'Start-Sleep -Seconds 1; $elapsed++ }}; '
-                f'Start-Sleep -Seconds 2; '
+                f'Start-Sleep -Seconds 3; '
                 f'Start-Process "{installer_path}" -ArgumentList "/SILENT" -Wait; '
-                f'Start-Sleep -Seconds 2; '
+                f'Start-Sleep -Seconds 3; '
                 f'Start-Process "{exe_path}"'
             )
 
