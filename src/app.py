@@ -264,7 +264,8 @@ class COMcheckerApp:
     def __init__(self, root):
         self.root = root
         self.root.title(f"{APP_NAME} v{VERSION}")
-        self.root.geometry("850x650")
+        self.root.geometry("960x700")
+        self.root.minsize(850, 600)
 
         self.logger = Logger()
         self.settings = Settings()
@@ -404,7 +405,7 @@ class COMcheckerApp:
         main_container.pack(fill="both", expand=True, padx=10, pady=10)
 
         ports_frame = ctk.CTkFrame(main_container, fg_color="#333333", corner_radius=6)
-        ports_frame.pack(fill="both", pady=(0, 5))
+        ports_frame.pack(fill="x", pady=(0, 5))
 
         ctk.CTkLabel(ports_frame, text="COM-Ports", font=("Segoe UI", 11, "bold"),
                        anchor="w").pack(anchor="w", padx=12, pady=(8, 2))
