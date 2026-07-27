@@ -429,7 +429,7 @@ class COMcheckerApp:
         ctk.CTkLabel(config_frame, text="Preset:").pack(side="left", padx=(0, 5))
         self.preset_var = ctk.StringVar(value="")
         ctk.CTkOptionMenu(config_frame, variable=self.preset_var,
-                           values=["", "Addimat", "Restliche", "iButton", "JK2000",
+                           values=["", "Addimat", "iButton", "JK2000",
                                    "NCR Orderman 2in1 SignIn (1)",
                                    "NCR Orderman 2in1 SignIn (2)", "WMF"],
                            fg_color="#333333", button_color=ACCENT, width=150,
@@ -578,7 +578,6 @@ class COMcheckerApp:
     def _apply_preset(self, choice):
         presets = {
             "Addimat": {"baudrate": "9600", "databits": "8", "stopbits": "1", "parity": "None", "timeout_ms": 50},
-            "Restliche": {"baudrate": "9600", "databits": "8", "stopbits": "1", "parity": "None", "timeout_ms": 10},
             "iButton": {"baudrate": "9600", "databits": "8", "stopbits": "1", "parity": "None", "timeout_ms": 10},
             "JK2000": {"baudrate": "2400", "databits": "8", "stopbits": "1", "parity": "None", "timeout_ms": 10},
             "NCR Orderman 2in1 SignIn (1)": {"baudrate": "9600", "databits": "8", "stopbits": "1", "parity": "None", "timeout_ms": 10},
