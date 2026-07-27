@@ -35,7 +35,7 @@ SetupLogging=yes
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "Desktopsymbol erstellen"; GroupDescription: "Zus&auml;tzliche Symbole:"; Flags: unchecked
+Name: "desktopicon"; Description: "Desktopsymbol erstellen"; GroupDescription: "Zusätzliche Symbole:"; Flags: unchecked
 
 [Files]
 Source: "dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
