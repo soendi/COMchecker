@@ -1,28 +1,26 @@
 <#
 .SYNOPSIS
-    Bumps the version of COMchecker and creates a Git tag.
+    Bumps version, builds EXE + Installer, creates GitHub Release.
 .DESCRIPTION
-    Updates version in:
-      - src/version.py
-      - version.json
-      - installer.iss
-    Then commits, pushes, tags, and pushes the tag.
+    Updates version in src/version.py, version.json, installer.iss,
+    commits, pushes, builds COMchecker.exe + COMchecker-Setup.exe,
+    tags, and creates a GitHub release with both assets.
 .PARAMETER Version
     Explicit version string (e.g. "1.0.1.0"). If omitted, increments patch.
 .PARAMETER Message
     Custom commit message. Default: "Release v{version}"
-.PARAMETER NoPush
-    Only commit and tag locally, don't push.
+.PARAMETER NoRelease
+    Only commit locally, skip build + tag + release.
 .EXAMPLE
-    .\bump.ps1                     # Patch +1 -> 1.0.1.0
-    .\bump.ps1 -Version 1.1.0.0   # Set explicit version
-    .\bump.ps1 -NoPush             # Local only
+    .\bump.ps1                     # Patch +1 -> Release
+    .\bump.ps1 -Version 2.0.0.0   # Set explicit version
+    .\bump.ps1 -NoRelease          # Version bump + commit only
 #>
 
 param(
     [string]$Version,
     [string]$Message,
-    [switch]$NoPush
+    [switch]$NoRelease
 )
 
 function Get-Value {
@@ -42,6 +40,21 @@ function Set-Value {
 }
 
 $ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ErrorActionPreference = "Stop"
+
+# Detect ISCC
+$isccPaths = @(
+    "$env:LOCALAPPDATA\Programs\Inno Setup 7\ISCC.exe",
+    "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe",
+    "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
+    "${env:ProgramFiles(x86)}\Inno Setup 7\ISCC.exe",
+    "${env:ProgramFiles}\Inno Setup 6\ISCC.exe",
+    "${env:ProgramFiles}\Inno Setup 7\ISCC.exe"
+)
+$iscc = $null
+foreach ($p in $isccPaths) {
+    if (Test-Path -LiteralPath $p) { $iscc = $p; break }
+}
 
 # Read current version
 $currentVersion = Get-Value -Path "$ProjectRoot\version.json" -Pattern '"version":\s*"([^"]+)"'
@@ -55,45 +68,72 @@ if (-not $Version) {
 }
 Write-Host "New version:     $Version"
 
-# Update src/version.py
+# Update version files
 Set-Value -Path "$ProjectRoot\src\version.py" `
     -Pattern 'VERSION\s*=\s*"[^"]*"' `
     -NewValue "VERSION = `"$Version`""
 
-# Update version.json
 Set-Value -Path "$ProjectRoot\version.json" `
     -Pattern '"version":\s*"[^"]+"' `
     -NewValue "`"version`": `"$Version`""
 
-# Update installer.iss
 Set-Value -Path "$ProjectRoot\installer.iss" `
     -Pattern '#define MyAppVersion "[^"]*"' `
     -NewValue "#define MyAppVersion `"$Version`""
 
 Write-Host "Updated all version references."
 
-# Git operations: commit & push FIRST, then tag (so release never precedes code)
+Set-Location -Path $ProjectRoot
 $commitMsg = if ($Message) { $Message } else { "Release v$Version" }
 
-Set-Location -Path $ProjectRoot
+# --- Git commit + push (no tag yet) ---
 git add -A
 git commit -m $commitMsg
 
-if (-not $NoPush) {
+if (-not $NoRelease) {
     git push origin HEAD:master
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "ERROR: Push failed. Tag was NOT created. Fix and retry."
+        Write-Host "ERROR: Push failed. Aborting."
         exit 1
     }
 }
 
+# --- Build EXE + Installer ---
+if (-not $NoRelease) {
+    Write-Host "`nBuilding COMchecker.exe with PyInstaller..."
+    pyinstaller --onefile --windowed --name "COMchecker" `
+        --icon "$ProjectRoot\resources\icon.ico" `
+        --add-data "$ProjectRoot\resources;resources" `
+        --distpath "$ProjectRoot\dist" `
+        --workpath "$ProjectRoot\build" `
+        --specpath "$ProjectRoot" `
+        "$ProjectRoot\src\main.py" 2>&1
+    if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: PyInstaller failed."; exit 1 }
+
+    if (-not $iscc) {
+        Write-Host "ERROR: ISCC.exe not found. Install Inno Setup or set path."
+        exit 1
+    }
+    Write-Host "Building COMchecker-Setup.exe with Inno Setup..."
+    & $iscc "$ProjectRoot\installer.iss" 2>&1
+    if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: ISCC failed."; exit 1 }
+}
+
+# --- Git tag (only after successful build) ---
 git tag "v$Version"
 
-if (-not $NoPush) {
+if (-not $NoRelease) {
     git push origin "v$Version"
-    Write-Host "Pushed commit and tag v$Version"
+    Write-Host "`nCreating GitHub Release v$Version..."
+    gh release create "v$Version" `
+        --title "COMchecker v$Version" `
+        --notes "Release v$Version" `
+        "$ProjectRoot\dist\COMchecker.exe" `
+        "$ProjectRoot\dist\COMchecker-Setup.exe"
+    if ($LASTEXITCODE -ne 0) { Write-Host "ERROR: gh release create failed."; exit 1 }
+    Write-Host "Pushed commit, tag v$Version, and created release."
 } else {
-    Write-Host "Local commit and tag created (not pushed)."
+    Write-Host "Local commit created (no tag, no build)."
 }
 
 Write-Host "Done."
