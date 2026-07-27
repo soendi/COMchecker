@@ -124,7 +124,9 @@ def run_update(version, progress_callback=None, done_callback=None):
             exe_path = os.path.abspath(sys.argv[0])
 
             ps_cmd = (
-                f'Start-Sleep -Seconds 3; '
+                f'Start-Sleep -Seconds 2; '
+                f'Stop-Process -Name "{APP_NAME}" -Force -ErrorAction SilentlyContinue; '
+                f'Start-Sleep -Seconds 1; '
                 f'Start-Process "{installer_path}" -ArgumentList "/SILENT" -Wait; '
                 f'Start-Process "{exe_path}"'
             )
