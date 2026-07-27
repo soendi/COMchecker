@@ -5,6 +5,7 @@ import threading
 import os
 import sys
 import subprocess
+import ctypes
 from datetime import datetime
 
 from src.scanner import PortMonitor, get_available_ports
@@ -399,7 +400,13 @@ class COMcheckerApp:
                       font=("Segoe UI", 15, "bold")).pack(side="left", padx=15, pady=8)
 
         ctk.CTkLabel(header, text=APP_DESCRIPTION, text_color="#cce5ff",
-                      font=("Segoe UI", 10)).pack(side="left", padx=5, pady=8)
+                       font=("Segoe UI", 10)).pack(side="left", padx=5, pady=8)
+
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+        admin_text = "Administrator" if is_admin else "Benutzer"
+        admin_color = "#ff9800" if is_admin else "#aaaaaa"
+        ctk.CTkLabel(header, text=admin_text, text_color=admin_color,
+                       font=("Segoe UI", 9)).pack(side="right", padx=15, pady=8)
 
         main_container = ctk.CTkFrame(self.root, fg_color="#2b2b2b")
         main_container.pack(fill="both", expand=True, padx=10, pady=10)
