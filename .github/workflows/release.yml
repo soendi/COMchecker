@@ -29,7 +29,7 @@ jobs:
 
       - name: Build executable with PyInstaller
         run: |
-          pyinstaller --onefile --windowed --icon=resources\icon.ico --name COMchecker --add-data "resources;resources" --hidden-import win32print --distpath dist src\main.py
+          pyinstaller --onefile --windowed --icon=resources\icon.ico --name COMchecker --add-data "resources;resources" --distpath dist src\main.py
 
       - name: Install Inno Setup
         run: |

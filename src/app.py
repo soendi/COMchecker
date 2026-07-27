@@ -6,7 +6,6 @@ import os
 import sys
 import subprocess
 import ctypes
-import win32print
 from datetime import datetime
 
 from src.scanner import PortMonitor, get_available_ports
@@ -147,6 +146,7 @@ class SettingsDialog:
 
     def _get_available_printers(self):
         try:
+            import win32print
             printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
             return [p[2] for p in printers] if printers else ["Standarddrucker (System)"]
         except Exception:
