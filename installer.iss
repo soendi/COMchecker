@@ -1,8 +1,8 @@
-ï»¿; Inno Setup Installer Script for COMchecker
+; Inno Setup Installer Script for COMchecker
 ; Requires Inno Setup 6+ for Unicode support
 
 #define MyAppName "COMchecker"
-#define MyAppVersion "1.0.0.14"
+#define MyAppVersion "1.0.0.15"
 #define MyAppPublisher "Lukas Sonderegger"
 #define MyAppURL "https://github.com/soendi/COMchecker"
 #define MyAppExeName "COMchecker.exe"
@@ -35,7 +35,7 @@ SetupLogging=yes
 Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "Desktopsymbol erstellen"; GroupDescription: "ZusÃ¤tzliche Symbole:"; Flags: unchecked
+Name: "desktopicon"; Description: "Desktopsymbol erstellen"; GroupDescription: "Zusätzliche Symbole:"; Flags: unchecked
 
 [Files]
 Source: "dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
@@ -71,7 +71,7 @@ begin
     + Chr(13) + Chr(13)
     + 'Ja  - Daten bleiben erhalten (Registry, Datenbank, Logs)'
     + Chr(13)
-    + 'Nein - Alles wird gelÃ¶scht inklusive Datenbank und Logdateien',
+    + 'Nein - Alles wird gelöscht inklusive Datenbank und Logdateien',
     mbConfirmation, MB_YESNO) = IDYES;
 end;
 
