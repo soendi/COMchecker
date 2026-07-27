@@ -744,53 +744,22 @@ class COMcheckerApp:
         run_update(version, on_progress, on_done)
 
     def _uninstall_app(self):
-        result = messagebox.askyesno(
-            "Deinstallieren",
-            "M\u00f6chten Sie COMchecker wirklich deinstallieren?\n\n"
-            "Sollen Ihre pers\u00f6nlichen Einstellungen (Registry) erhalten bleiben?"
-        )
-        keep_settings = result
-
-        result2 = messagebox.askyesno(
-            "Best\u00e4tigung",
-            "Soll auch die Datenbank und Logdatei gel\u00f6scht werden?"
-        )
-        delete_data = result2
-
-        confirm = messagebox.askyesno(
-            "Wirklich deinstallieren?",
-            "COMchecker wird vollst\u00e4ndig entfernt.\n\n"
-            f"Einstellungen behalten: {'Ja' if keep_settings else 'Nein'}\n"
-            f"Datenbank/Logs l\u00f6schen: {'Ja' if delete_data else 'Nein'}\n\n"
-            "Fortfahren?"
-        )
-
+        confirm = messagebox.askyesno("Deinstallieren",
+            "COMchecker wird deinstalliert.\n\n"
+            "Fortfahren?")
         if confirm:
-            self._perform_uninstall(keep_settings, delete_data)
+            self._perform_uninstall()
 
-    def _perform_uninstall(self, keep_settings, delete_data):
+    def _perform_uninstall(self):
         try:
-            if not keep_settings:
-                self.settings.delete_all()
-
-            appdata_dir = os.path.join(os.environ.get("LOCALAPPDATA", os.path.expanduser("~")), APP_NAME)
-
-            if delete_data:
-                if os.path.exists(appdata_dir):
-                    import shutil
-                    shutil.rmtree(appdata_dir, ignore_errors=True)
-                self.logger.info("Datenbank und Logs gel\u00f6scht")
-
-            self.logger.info("Deinstallation eingeleitet")
-
             uninstall_path = self._find_uninstaller()
             if uninstall_path and os.path.exists(uninstall_path):
-                subprocess.Popen([uninstall_path, "/SILENT"])
+                subprocess.Popen([uninstall_path])
                 self.root.destroy()
             else:
                 messagebox.showwarning("Deinstallation",
                     "Der Uninstaller wurde nicht gefunden.\n"
-                    "Bitte deinstallieren Sie COMchecker manuell \u00fcber:\n"
+                    "Bitte deinstallieren Sie COMchecker manuell über:\n"
                     "Systemsteuerung > Programme und Funktionen")
         except Exception as e:
             messagebox.showerror("Fehler", f"Deinstallation fehlgeschlagen:\n{e}")

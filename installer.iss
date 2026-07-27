@@ -67,9 +67,10 @@ function InitializeUninstall: Boolean;
 begin
   Result := True;
   KeepSettings := MsgBox(
-    'Sollen Ihre Einstellungen (Registry) erhalten bleiben?' #13#13
-    'Ja  â€“ Einstellungen, Datenbank und Logdateien bleiben erhalten' #13
-    'Nein â€“ Alles wird gelÃ¶scht inklusive Datenbank und Logdateien',
+    'Sollen Ihre Einstellungen, Datenbank und Logdateien erhalten bleiben?'
+    #13#13
+    'Ja  – Daten bleiben erhalten (Registry, Datenbank, Logs)' #13
+    'Nein – Alles wird gelöscht inklusive Datenbank und Logdateien',
     mbConfirmation, MB_YESNO) = IDYES;
 end;
 
